@@ -1,1 +1,0 @@
-CREATE TABLE IF NOT EXISTS incidents (id SERIAL PRIMARY KEY, title VARCHAR(200) NOT NULL, description TEXT, severity VARCHAR(20), status VARCHAR(20), assignee VARCHAR(120), source VARCHAR(80), created_at TIMESTAMP, updated_at TIMESTAMP);

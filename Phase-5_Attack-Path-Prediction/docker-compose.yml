@@ -1,0 +1,33 @@
+services:
+  database:
+    image: postgres:17-alpine
+    env_file: .env
+    volumes:
+      - phase5_postgres:/var/lib/postgresql/data
+      - ./database/schemas/attack_paths.sql:/docker-entrypoint-initdb.d/01-paths.sql:ro
+      - ./database/schemas/attack_graph.sql:/docker-entrypoint-initdb.d/02-graph.sql:ro
+      - ./database/schemas/assets.sql:/docker-entrypoint-initdb.d/03-assets.sql:ro
+      - ./database/schemas/risk_scores.sql:/docker-entrypoint-initdb.d/04-risks.sql:ro
+      - ./database/schemas/recommendations.sql:/docker-entrypoint-initdb.d/05-recommendations.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  backend:
+    build: {context: ., dockerfile: backend/Dockerfile}
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+      PHASE4_API_URL: http://host.docker.internal:8002/api
+      MODEL_DIRECTORY: /ai_models/trained_models
+      MODEL_METADATA_PATH: /ai_models/model_metadata.json
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["8003:8003"]
+    depends_on: {database: {condition: service_healthy}}
+  frontend:
+    build: ./frontend
+    ports: ["5176:80"]
+    depends_on: [backend]
+volumes:
+  phase5_postgres:

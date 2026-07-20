@@ -1,0 +1,5 @@
+import { ArrowUpRight } from 'lucide-react'
+import { LINKS } from '../config/links'
+import { Brand } from './Brand'
+
+export function Footer() { return <footer className="footer"><div className="container footer__grid"><div><Brand/><p>An integrated engineering platform for intelligent cyber threat monitoring, analysis, prediction, and controlled response.</p></div><div><strong>Platform</strong><a href="#features">Capabilities</a><a href="#workflow">Workflow</a><a href="#architecture">Architecture</a></div><div><strong>Project</strong><a href="#about">Mission</a><a href={LINKS.documentation} target="_blank" rel="noopener noreferrer">API Documentation <ArrowUpRight/></a><a href={LINKS.repository} target="_blank" rel="noopener noreferrer">GitHub <ArrowUpRight/></a></div><div><strong>Core technology</strong><span>React + Vite</span><span>Python + FastAPI</span><span>PostgreSQL + Docker</span></div></div><div className="container footer__bottom"><span>© {new Date().getFullYear()} AI Cyber Threat Intelligence System</span><span>Engineered for intelligent defense.</span></div></footer> }

@@ -1,0 +1,4 @@
+INSERT INTO threats(name,type,description,severity,risk_score,confidence_score,source,status) VALUES ('Suspicious IP with repeated authentication failures','correlated activity','Defensive correlation of reputation and authentication telemetry.','critical',92,91,'Phase 3 correlator','active') ON CONFLICT DO NOTHING;
+INSERT INTO indicators(indicator_type,value,confidence_score,reputation_score,threat_category,country,status) VALUES ('ip','198.51.100.42',90,92,'command-and-control','ZZ','malicious') ON CONFLICT DO NOTHING;
+INSERT INTO malware(hash,hash_type,family,severity) VALUES ('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','sha256','ExampleFamily','high') ON CONFLICT DO NOTHING;
+INSERT INTO activity_logs(user_id,event_type,ip_address,device,status,risk_level,risk_score,details) VALUES ('service-portal','multiple_failed_logins','198.51.100.42','unknown-browser','failed','critical',90,'{"log_type":"authentication","failed_login_count":10}');

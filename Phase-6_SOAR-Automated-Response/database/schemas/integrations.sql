@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS integrations (id SERIAL PRIMARY KEY, name VARCHAR(120), integration_type VARCHAR(40), enabled BOOLEAN DEFAULT FALSE, endpoint VARCHAR(300));

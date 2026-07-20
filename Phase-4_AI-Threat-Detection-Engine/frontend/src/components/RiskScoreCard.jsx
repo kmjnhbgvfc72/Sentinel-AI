@@ -1,0 +1,1 @@
+export default function RiskScoreCard({ risk }) { const score = risk?.risk_score || 0; return <section className="panel risk-card"><p>Latest AI risk score</p><strong>{score}</strong><div className="risk-track"><i style={{ width: `${score}%` }}/></div><span className={`badge ${risk?.severity || "low"}`}>{risk?.severity || "low"}</span></section>; }

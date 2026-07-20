@@ -1,0 +1,1 @@
+INSERT INTO vulnerabilities(cve_id,description,severity,cvss_score,risk_level,affected_products) VALUES ('CVE-2026-41001','Sample defensive workflow vulnerability record.','critical',9.8,'critical','["Example Gateway 4.x"]') ON CONFLICT DO NOTHING;

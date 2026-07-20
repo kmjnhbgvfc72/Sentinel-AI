@@ -1,3 +1,0 @@
-import axios from 'axios'
-export const api=axios.create({baseURL:import.meta.env.VITE_API_URL||'http://localhost:8005/api',timeout:10000,headers:{Accept:'application/json'}})
-export const intelligenceApi={feeds:()=>api.get('/feeds'),statuses:()=>api.get('/feeds/status'),sync:(feed_ids)=>api.post('/feeds/sync',{feed_ids}),iocs:(params)=>api.get('/ioc',{params}),createIOC:(body)=>api.post('/ioc',body),deleteIOC:(id)=>api.delete(`/ioc/${id}`),reputation:(type,value)=>api.get(`/reputation/${type}/${encodeURIComponent(value)}`),correlations:(refresh=false)=>api.get('/correlation',{params:{refresh}}),summary:()=>api.get('/intelligence/summary')}

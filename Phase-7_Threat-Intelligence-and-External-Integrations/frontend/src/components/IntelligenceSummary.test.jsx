@@ -1,2 +1,0 @@
-import {render,screen} from '@testing-library/react';import {describe,expect,it} from 'vitest';import IntelligenceSummary from './IntelligenceSummary';
-describe('IntelligenceSummary',()=>{it('renders defensive metrics',()=>{render(<IntelligenceSummary summary={{active_iocs:12,critical_iocs:2,healthy_feeds:3,correlations:4}}/>);expect(screen.getByText('12')).toBeInTheDocument();expect(screen.getByText('Correlations')).toBeInTheDocument()})})

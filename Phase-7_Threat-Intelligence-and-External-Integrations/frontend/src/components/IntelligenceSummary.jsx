@@ -1,3 +1,0 @@
-import {Database,Radio,ShieldAlert,Waypoints} from 'lucide-react'
-const cards=[['active_iocs','Active IOCs',Database],['critical_iocs','Critical',ShieldAlert],['healthy_feeds','Healthy feeds',Radio],['correlations','Correlations',Waypoints]]
-export default function IntelligenceSummary({summary={}}){return <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{cards.map(([key,label,Icon])=><div className="panel" key={key}><div className="flex items-center justify-between"><span className="muted">{label}</span><Icon className="text-aqua" size={18}/></div><strong className="mt-3 block text-3xl">{summary[key]??0}</strong></div>)}</div>}

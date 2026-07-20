@@ -1,4 +1,0 @@
-import { ArrowRight, BookOpen, LayoutDashboard } from 'lucide-react'
-import { LINKS } from '../config/links'
-
-export function CallToAction() { return <section className="section cta" aria-labelledby="cta-title"><div className="container cta__panel"><div className="cta__glow"/><span className="kicker">EXPLORE THE SYSTEM</span><h2 id="cta-title">See the intelligence pipeline<br/><em>from signal to response.</em></h2><p>Open the SOC console or review the central API documentation to understand the implemented platform in greater detail.</p><div className="cta__actions"><a className="button button--primary" href={LINKS.dashboard} target="_blank" rel="noopener noreferrer"><LayoutDashboard/> Open Dashboard</a><a className="button button--ghost" href={LINKS.documentation} target="_blank" rel="noopener noreferrer"><BookOpen/> View Documentation</a><a className="text-link" href="#features">Explore the Platform <ArrowRight/></a></div></div></section> }

@@ -1,1 +1,0 @@
-export default function ConfidenceScore({ value = 0 }) { return <section className="panel metric"><span>Threat confidence</span><strong>{value.toFixed(1)}%</strong><small>Latest model prediction</small></section>; }

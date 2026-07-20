@@ -1,4 +1,0 @@
-event_id,event_type,failed_login_count,unknown_ip,new_device,location_changed,abnormal_time,activity_frequency,historical_average
-log-001,authentication,12,1,1,0,1,40,4
-log-002,authentication,0,0,0,0,0,4,5
-log-003,user_activity,0,0,1,1,1,18,5

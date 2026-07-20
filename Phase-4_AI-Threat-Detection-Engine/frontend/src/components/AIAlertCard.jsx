@@ -1,1 +1,0 @@
-export default function AIAlertCard({ alert }) { return <article className="alert-card"><span className={`badge ${alert.priority}`}>{alert.priority}</span><div><h3>{alert.alert_type}</h3><p>{alert.description}</p><small>{alert.event_id} · {new Date(alert.created_at).toLocaleString()}</small></div></article>; }

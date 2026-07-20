@@ -1,1 +1,0 @@
-export default function AssetRiskCard({ asset }) { return <article className="asset-card"><div><strong>{asset.asset_name}</strong><small>{asset.asset_type} · criticality {asset.criticality}</small></div><span className={`badge ${asset.risk_score >= 85 ? "critical" : asset.risk_score >= 70 ? "high" : "medium"}`}>{asset.risk_score}</span></article>; }

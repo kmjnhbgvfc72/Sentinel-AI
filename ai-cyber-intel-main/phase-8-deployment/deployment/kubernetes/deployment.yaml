@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: ai-soc-api, namespace: ai-soc, labels: {app: ai-soc-api}}
+spec:
+  replicas: 3
+  strategy: {type: RollingUpdate, rollingUpdate: {maxUnavailable: 0, maxSurge: 1}}
+  selector: {matchLabels: {app: ai-soc-api}}
+  template:
+    metadata: {labels: {app: ai-soc-api}}
+    spec:
+      serviceAccountName: ai-soc-api
+      automountServiceAccountToken: false
+      securityContext: {runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: api
+          image: ghcr.io/your-org/ai-soc-api:8.0.0
+          imagePullPolicy: IfNotPresent
+          ports: [{name: http, containerPort: 8000}]
+          envFrom: [{configMapRef: {name: ai-soc-config}}, {secretRef: {name: ai-soc-secrets}}]
+          resources: {requests: {cpu: 250m, memory: 512Mi}, limits: {cpu: "2", memory: 2Gi}}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          volumeMounts: [{name: tmp, mountPath: /tmp}, {name: models, mountPath: /app/models, readOnly: true}]
+          readinessProbe: {httpGet: {path: /health/ready, port: http}, initialDelaySeconds: 10, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /health/live, port: http}, initialDelaySeconds: 20, periodSeconds: 20}
+      volumes: [{name: tmp, emptyDir: {}}, {name: models, persistentVolumeClaim: {claimName: ai-soc-models}}]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: ai-soc-api, namespace: ai-soc}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: ai-soc-api, namespace: ai-soc}
+spec: {minAvailable: 2, selector: {matchLabels: {app: ai-soc-api}}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: ai-soc-api, namespace: ai-soc}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: ai-soc-api}
+  minReplicas: 3
+  maxReplicas: 12
+  metrics: [{type: Resource, resource: {name: cpu, target: {type: Utilization, averageUtilization: 70}}}]
+

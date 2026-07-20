@@ -1,0 +1,1 @@
+export default function RecommendationCard({ recommendation }) { return <article className="recommendation"><span className={`badge ${recommendation.priority}`}>{recommendation.priority}</span><div><strong>{recommendation.recommendation}</strong><small>{recommendation.threat_id} · {recommendation.status}</small></div></article>; }

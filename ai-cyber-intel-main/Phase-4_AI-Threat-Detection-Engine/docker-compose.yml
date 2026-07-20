@@ -1,0 +1,37 @@
+services:
+  database:
+    image: postgres:17-alpine
+    env_file: .env
+    volumes:
+      - phase4_postgres:/var/lib/postgresql/data
+      - ./database/schemas/ai_predictions.sql:/docker-entrypoint-initdb.d/01-predictions.sql:ro
+      - ./database/schemas/risk_scores.sql:/docker-entrypoint-initdb.d/02-risks.sql:ro
+      - ./database/schemas/ai_alerts.sql:/docker-entrypoint-initdb.d/03-alerts.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    security_opt: ["no-new-privileges:true"]
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+      PHASE3_API_URL: http://host.docker.internal:8001/api
+      MODEL_DIRECTORY: /ai_models/trained_models
+      MODEL_METADATA_PATH: /ai_models/model_metadata.json
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["8002:8002"]
+    depends_on:
+      database: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+  frontend:
+    build: ./frontend
+    ports: ["5175:80"]
+    depends_on: [backend]
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  phase4_postgres:

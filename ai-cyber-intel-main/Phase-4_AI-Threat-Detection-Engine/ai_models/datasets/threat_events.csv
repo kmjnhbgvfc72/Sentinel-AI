@@ -1,0 +1,4 @@
+event_id,event_type,severity,ioc_reputation,vulnerability_score,malware_indicator
+event-001,authentication,critical,91,8.8,0
+event-002,malware indicator,high,88,6.5,1
+event-003,data access,medium,40,4.0,0

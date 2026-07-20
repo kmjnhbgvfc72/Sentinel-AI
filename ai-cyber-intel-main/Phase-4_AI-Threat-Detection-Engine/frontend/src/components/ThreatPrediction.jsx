@@ -1,0 +1,1 @@
+export default function ThreatPrediction({ prediction }) { return <article className="prediction"><div><strong>{prediction.prediction}</strong><small>{prediction.event_id}</small></div><span>{prediction.anomaly ? "Anomaly" : "Observed"}</span></article>; }

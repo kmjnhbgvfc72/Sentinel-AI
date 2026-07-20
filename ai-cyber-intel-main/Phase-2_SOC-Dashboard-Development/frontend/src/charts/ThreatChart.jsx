@@ -1,0 +1,4 @@
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
+const colors = { critical: "#ff5c6c", high: "#ff9855", medium: "#f4c95d", low: "#42d392" };
+export default function ThreatChart({ data = [] }) { return <div className="chart" role="img" aria-label="Threat activity over time by severity"><ResponsiveContainer width="100%" height={300}><LineChart data={data} margin={{ top: 12, right: 10, left: -20, bottom: 0 }}><CartesianGrid stroke="#203040" strokeDasharray="3 3"/><XAxis dataKey="time" stroke="#8393a1"/><YAxis allowDecimals={false} stroke="#8393a1"/><Tooltip contentStyle={{ background: "#0d1722", border: "1px solid #28394b", borderRadius: 8 }}/><Legend/>{Object.entries(colors).map(([key, color]) => <Line key={key} type="monotone" dataKey={key} stroke={color} strokeWidth={2} dot={false}/>)}</LineChart></ResponsiveContainer></div>; }

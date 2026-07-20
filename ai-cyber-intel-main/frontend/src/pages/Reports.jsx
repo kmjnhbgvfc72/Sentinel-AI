@@ -1,0 +1,16 @@
+import { useCallback, useEffect, useState } from 'react'
+import { BarChart3, Download, FileBarChart, FileText, LoaderCircle, Plus, ShieldCheck } from 'lucide-react'
+import { reportsApi } from '../api/api'
+import { PageHeader } from './Threats'
+
+export default function Reports() {
+  const [reports, setReports] = useState([]); const [creating, setCreating] = useState(''); const [active, setActive] = useState(null)
+  const load = useCallback(() => reportsApi.list().then(setReports).catch(() => setReports([])), [])
+  useEffect(() => { load() }, [load])
+  const templates = [{ type: 'daily_security', title: 'Daily Security Report', text: 'Authentication activity, events, alerts, and incident volume.', icon: FileBarChart }, { type: 'threat_analysis', title: 'Threat Analysis Report', text: 'Threat types, risk levels, source IPs, and event timing.', icon: ShieldCheck }, { type: 'incident', title: 'Incident Report', text: 'Critical events requiring response and containment review.', icon: FileText }]
+  async function generate(type) { setCreating(type); try { const report = await reportsApi.generate(type); setActive(report); await load() } finally { setCreating('') } }
+  const summary = active?.summary || reports[0]?.summary
+  return <div className="page"><PageHeader eyebrow="Central security analytics" title="Security Reports" text="Generate auditable summaries from central authentication and security event data." action={<button className="button primary" onClick={() => generate('daily_security')} disabled={Boolean(creating)}>{creating ? <LoaderCircle className="spin" size={16}/> : <Plus size={16}/>}Generate daily report</button>} /><section className="report-grid">{templates.map(template => { const Icon = template.icon; return <article className="panel report-card" key={template.type}><div className="report-icon"><Icon /></div><span>On-demand report</span><h2>{template.title}</h2><p>{template.text}</p><button className="button secondary" onClick={() => generate(template.type)} disabled={Boolean(creating)}>{creating === template.type ? <LoaderCircle className="spin" size={15}/> : <Download size={15}/>}Generate</button></article> })}</section>{summary && <section className="report-summary panel"><div className="panel-heading"><div><span className="eyebrow">Generated security summary</span><h2>{(active?.report_type || reports[0]?.report_type || '').replaceAll('_', ' ')}</h2></div><button className="button secondary" onClick={() => window.print()}><Download size={15}/>Export / print</button></div><div className="report-stat-grid"><ReportStat label="Security events" value={summary.total_security_events}/><ReportStat label="Failed logins" value={summary.failed_logins}/><ReportStat label="Detected threats" value={summary.detected_threats}/><ReportStat label="Incidents" value={summary.incidents}/></div><div className="report-event-list"><div><BarChart3 size={16}/><strong>Threat and event snapshot</strong></div>{(summary.events || []).slice(0, 6).map((event, index) => <p key={index}><span className={`severity severity-${event.risk_level}`}>{event.risk_level}</span>{event.type}<code>{event.source_ip}</code><time>{new Date(event.time).toLocaleString()}</time></p>)}</div></section>}</div>
+}
+
+function ReportStat({ label, value = 0 }) { return <div><span>{label}</span><strong>{value}</strong></div> }

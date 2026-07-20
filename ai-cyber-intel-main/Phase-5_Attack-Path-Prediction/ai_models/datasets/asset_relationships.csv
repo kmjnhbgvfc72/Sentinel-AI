@@ -1,0 +1,4 @@
+source,target,relationship
+Threat Indicator,User Account,observes
+User Account,Web Server,accesses
+Web Server,Database Server,connects

@@ -1,0 +1,50 @@
+name: ai-cti-central
+services:
+  central-database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: cti_central
+      POSTGRES_USER: cti
+      POSTGRES_PASSWORD: ${CENTRAL_POSTGRES_PASSWORD:?Set CENTRAL_POSTGRES_PASSWORD}
+    volumes:
+      - central-postgres:/var/lib/postgresql/data
+      - ./database/central_schema.sql:/docker-entrypoint-initdb.d/001-central-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cti -d cti_central"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  central-api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      CENTRAL_DATABASE_URL: postgresql+psycopg://cti:${CENTRAL_POSTGRES_PASSWORD}@central-database:5432/cti_central
+      CENTRAL_PHASE1_URL: http://host.docker.internal:8000
+      CENTRAL_PHASE2_URL: http://host.docker.internal:8010
+      CENTRAL_PHASE3_URL: http://host.docker.internal:8001
+      CENTRAL_PHASE4_URL: http://host.docker.internal:8002
+      CENTRAL_PHASE5_URL: http://host.docker.internal:8003
+      CENTRAL_PHASE6_URL: http://host.docker.internal:8004
+      CENTRAL_PHASE7_URL: http://host.docker.internal:8005
+      CENTRAL_PHASE8_URL: http://host.docker.internal:8080
+      CENTRAL_PHASE9_URL: http://host.docker.internal:8090
+      CENTRAL_PHASE6_TOKEN: ${CENTRAL_PHASE6_TOKEN:-}
+      CENTRAL_PHASE9_API_KEY: ${CENTRAL_PHASE9_API_KEY:-}
+      CENTRAL_AUTH_TOKEN_TTL_MINUTES: ${CENTRAL_AUTH_TOKEN_TTL_MINUTES:-480}
+      CENTRAL_BOOTSTRAP_ADMIN_USERNAME: ${CENTRAL_BOOTSTRAP_ADMIN_USERNAME:-admin}
+      CENTRAL_BOOTSTRAP_ADMIN_EMAIL: ${CENTRAL_BOOTSTRAP_ADMIN_EMAIL:-admin@localhost}
+      CENTRAL_BOOTSTRAP_ADMIN_PASSWORD: ${CENTRAL_BOOTSTRAP_ADMIN_PASSWORD:-}
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["8100:8100"]
+    depends_on:
+      central-database: {condition: service_healthy}
+    read_only: true
+    tmpfs: ["/tmp"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+volumes:
+  central-postgres:

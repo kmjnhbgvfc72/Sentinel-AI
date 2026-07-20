@@ -1,0 +1,9 @@
+import { useCallback, useEffect, useState } from "react";
+import AttackGraph from "../components/AttackGraph";
+import AttackGraphChart from "../components/AttackGraphChart";
+import AttackPathCard from "../components/AttackPathCard";
+import RecommendationCard from "../components/RecommendationCard";
+import RiskMap from "../components/RiskMap";
+import { attackApi } from "../services/attackApi";
+
+export default function AttackAnalysis() { const [state, setState] = useState({ loading: true, error: null }); const load = useCallback(async () => { try { const [paths, graph, assets, recommendations] = await Promise.all([attackApi.paths(), attackApi.graph(), attackApi.assets(), attackApi.recommendations()]); setState({ loading: false, error: null, paths: paths.data, graph: graph.data, assets: assets.data, recommendations: recommendations.data }); } catch (error) { setState({ loading: false, error: error.message }); } }, []); useEffect(() => { load(); }, [load]); return <main className="workspace"><header><div><p className="eyebrow">Sentinel AI · Phase 5</p><h1>Attack Path Analysis</h1><p>Defensive relationship mapping, asset risk, and analyst recommendations.</p></div><span className="online">Prediction engine online</span></header>{state.loading ? <div className="state">Loading attack analysis…</div> : state.error ? <div className="state error"><strong>Unable to load attack analysis</strong><p>{state.error}</p><button onClick={load}>Retry</button></div> : <div className="grid"><AttackGraph edges={state.graph}/><AttackGraphChart paths={state.paths}/><section className="panel paths"><h2>Predicted attack paths</h2>{state.paths.map((item) => <AttackPathCard key={item.id} path={item}/>)}</section><RiskMap assets={state.assets}/><section className="panel recommendations"><h2>Security recommendations</h2>{state.recommendations.map((item) => <RecommendationCard key={item.id} recommendation={item}/>)}</section></div>}</main>; }

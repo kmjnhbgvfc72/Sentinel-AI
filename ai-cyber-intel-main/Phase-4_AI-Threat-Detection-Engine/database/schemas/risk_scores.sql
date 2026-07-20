@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS risk_scores (id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, threat_id VARCHAR(128) NOT NULL, risk_score DOUBLE PRECISION NOT NULL CHECK (risk_score BETWEEN 0 AND 100), severity VARCHAR(20) NOT NULL CHECK (severity IN ('low','medium','high','critical')), created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE INDEX IF NOT EXISTS idx_risk_scores_created ON risk_scores(created_at DESC);

@@ -1,0 +1,1 @@
+export default function AttackGraph({ edges }) { return <section className="panel graph"><h2>Attack relationship graph</h2><div className="graph-flow">{edges.map((edge, index) => <div className="edge" key={edge.id}><span>{edge.source}</span><b>→</b><span>{edge.target}</span><small>{edge.relationship}</small>{index < edges.length - 1 && <i/>}</div>)}</div></section>; }

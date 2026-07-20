@@ -1,0 +1,11 @@
+{
+  "model_version": "5.0.0",
+  "trained_at": "2026-07-17T16:42:10.471455+00:00",
+  "rows": 5,
+  "features": [
+    "path_length",
+    "risk_score"
+  ],
+  "algorithm": "RandomForestRegressor",
+  "random_state": 42
+}

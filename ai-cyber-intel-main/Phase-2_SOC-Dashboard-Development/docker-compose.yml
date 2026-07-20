@@ -1,0 +1,25 @@
+services:
+  database:
+    image: postgres:17-alpine
+    env_file: .env
+    volumes:
+      - phase2_postgres:/var/lib/postgresql/data
+      - ./database/dashboard_schema.sql:/docker-entrypoint-initdb.d/01-assets.sql:ro
+      - ./database/threat_schema.sql:/docker-entrypoint-initdb.d/02-threats.sql:ro
+      - ./database/alerts_schema.sql:/docker-entrypoint-initdb.d/03-alerts.sql:ro
+      - ./database/seed_data.sql:/docker-entrypoint-initdb.d/04-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    security_opt: ["no-new-privileges:true"]
+  backend:
+    build: ./backend
+    env_file: .env
+    ports: ["8000:8000"]
+    depends_on:
+      database: { condition: service_healthy }
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  phase2_postgres:
